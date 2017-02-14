@@ -2,14 +2,13 @@ import gedcom
 import datetime
 from prettytable import PrettyTable
 
-#gedcomfile = gedcom.parse("sample.ged")
-parsed = gedcom.parse("sample.ged")
+parsed = gedcom.parse("sample.ged")     # Provide gedcom file path here
 individual = list(parsed.individuals)
 today = datetime.datetime.now()
-x = PrettyTable()
-x.field_names = ["Child", "Name", "Gender", "Age", "Alive", "Birthday", "Spouse", "Death", "ID"]
-y=PrettyTable()
-y.field_names = ["Wife_ID", "Husband_ID", "Divorce", "Wife Name", "Family Id", "Marriage", "Husband Name", "Child"]
+individualTable = PrettyTable()
+individualTable.field_names = ["ID", "Name", "Gender", "Birthday", "Age", "Alive", "Death", "Child", "Spouse"]
+familyTable=PrettyTable()
+familyTable.field_names = ["ID","Married","Divorced","Husband_ID","Husband Name", "Wife Id", "Wife Name", "Children"]
     
 for i in range(len(individual)):
     temp = individual[i]
@@ -19,14 +18,13 @@ for i in range(len(individual)):
     person['id'] = temp.id
     person['name'] = fname +" "+ lname
     person['gender'] = temp.gender
-    #person['tag'] = temp.tag
     person['birthdate'] = temp.birth.date
-    bd = datetime.datetime.strptime(temp.birth.date,'%d %b %Y')
+    birthDate = datetime.datetime.strptime(temp.birth.date,'%d %b %Y')
 
     if temp.__contains__('DEAT'):
         person['alive'] = 'NA'
-        dd = temp.__getitem__('DEAT')
-        person['deathdate'] = dd.value
+        deathDate = temp.__getitem__('DEAT')
+        person['deathdate'] = deathDate.value
     else:
         person['deathdate'] = 'NA'
         person['alive'] = 'Y'
@@ -34,7 +32,7 @@ for i in range(len(individual)):
     if temp.__contains__('DEAT'):
         person['age'] = (datetime.datetime.strptime(temp.death.date,'%d %b %Y') - datetime.datetime.strptime(temp.birth.date,'%d %b %Y')).days/365
     else:
-        person['age'] = (today - bd).days/365
+        person['age'] = (today - birthDate).days/365
 
     if temp.__contains__('FAMS'):
         spouses = temp.__getitem__('FAMS')
@@ -60,15 +58,8 @@ for i in range(len(individual)):
     else:
         person['child'] = 'NA'
 
-    #print temp
-    b = person.values()
-    #print(b)
-    x.add_row(b)
-    #print person
-    #print temp.child_elements
-    #print "_____________"
-    #print temp
-    #print dir(temp)
+    dictlist = [person['id'],person['name'],person['gender'],person['birthdate'],person['age'],person['alive'],person['deathdate'],person['child'],person['spouses']]
+    individualTable.add_row(dictlist)
 
 fa = list(parsed.families)
 for i in range(len(fa)):
@@ -77,7 +68,6 @@ for i in range(len(fa)):
     family['Family_id'] = f.id
     #husband = f.partners[0]
     #wife = f.partners[1]
-    #marriage = f.get_list('MARR')[0], .child_elements.__getitem__('DATE')
     if f.__contains__('DIV'):
         divorce = f.__getitem__('DIV').__getitem__('DATE').value
         family['divorce'] = divorce
@@ -99,27 +89,28 @@ for i in range(len(fa)):
     
     if f.__contains__('MARR'):
         md = (f.__getitem__('MARR')).date
-        #print md
+        family['marriage'] = md
     else:
         family['marriage'] = 'NA'
+    
+    if f.__contains__('HUSB'):
+        family['husband_id'] = f.__getitem__('HUSB').value
+        family['husband_name'] = ' '.join(f.get_by_id(family['husband_id']).name)
+    else:
+        family['husband_id'] = 'NA'
+        family['husband_name'] = 'NA'
 
-    family['husband_id'] = f.partners[0].value
-    family['husband_name'] = ' '.join(f.get_by_id(f.partners[0].value).name)
-    family['wife_id'] = f.partners[1].value
-    family['wife_name'] = ' '.join(f.get_by_id(f.partners[1].value).name)
-    family['marriage'] = md
+    if f.__contains__('WIFE'):
+        family['wife_id'] = f.__getitem__('WIFE').value
+        family['wife_name'] = ' '.join(f.get_by_id(family['wife_id']).name)
+    else:
+        family['wife_id'] = 'NA'
+        family['wife_name'] = 'NA'
+    
+    dictlist2 = [family['Family_id'],family['marriage'],family['divorce'],family['husband_id'],family['husband_name'],family['wife_id'],family['wife_name'],family['child']]
+    familyTable.add_row(dictlist2)
 
-    #print family
-    c = family.values()
-    #print(c)
-    y.add_row(c)
-    #print family
-    #print dir(f)
-    #print f.get_list
-    #print dir(husband)
-    #print dir(wife)
-    #print dir(divorce)
-    #print type(marriage)
-
-print(x)
-print(y)
+print "Individuals"
+print(individualTable)
+print "Families"
+print(familyTable)
