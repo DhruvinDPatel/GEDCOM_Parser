@@ -14,7 +14,6 @@ for i in range(len(individual)):
     temp = individual[i]
     person = {}
     fname, lname = temp.name
-
     person['id'] = temp.id
     person['name'] = fname +" "+ lname
     person['gender'] = temp.gender
@@ -66,8 +65,6 @@ for i in range(len(fa)):
     f = fa[i]
     family = {}
     family['Family_id'] = f.id
-    #husband = f.partners[0]
-    #wife = f.partners[1]
     if f.__contains__('DIV'):
         divorce = f.__getitem__('DIV').__getitem__('DATE').value
         family['divorce'] = divorce
