@@ -2,11 +2,10 @@ import gedcom
 import datetime
 from prettytable import PrettyTable
 
-# Marriage before death, Divorce before death
-
+parsedData = gedcom.parse("sample.ged")
 today = datetime.datetime.now()
-allPersons = {}
-allFamilies = {}
+allPersons = []
+allFamilies = []
 
 def forIndividual(parsedData):    
     individual = list(parsedData.individuals)
@@ -29,8 +28,8 @@ def forIndividual(parsedData):
             deathDate = (temp.__getitem__('DEAT')).date
             person['deathdate'] = datetime.datetime.strptime(deathDate, '%d %b %Y')
         else:
-            person['deathdate'] = 'NA'
-            person['alive'] = 'Y'
+            person['deathdate'] = None
+            person['alive'] = True
 
         if temp.__contains__('DEAT'):
             person['age'] = (datetime.datetime.strptime(temp.death.date,'%d %b %Y') - datetime.datetime.strptime(temp.birth.date,'%d %b %Y')).days/365
@@ -63,7 +62,7 @@ def forIndividual(parsedData):
 
         dictlist = [person['id'],person['name'],person['gender'],person['birthdate'],person['age'],person['alive'],person['deathdate'],person['child'],person['spouses']]
         individualTable.add_row(dictlist)
-        allPersons[i] = person     
+        allPersons.append(person)
     print "Individuals"
     print(individualTable)
     return allPersons
@@ -120,17 +119,26 @@ def forFamilies(parsedData):
         
         dictlist2 = [family['Family_id'],family['marriage'],family['divorce'],family['husband_id'],family['husband_name'],family['wife_id'],family['wife_name'],family['child']]
         familyTable.add_row(dictlist2)
-        allFamilies[i] = family
+        allFamilies.append(family)
     print "Families"
     print(familyTable)
     return allFamilies
 
-def marriageBeforeDeath_US(allFamilies, allPersons):
-    for i in range(len(allFamilies):
-        if allFamilies[i]['marriage']:
-            for j in range(len(allPersons)):
-
+def marriageBeforeDeath_US05(allFamilies, allPersons):
+    for i in range(len(allFamilies)):
+        husbandID = allFamilies[i]['husband_id']
+        marriageDate = allFamilies[i]['marriage']
+        wifeID = allFamilies[i]['wife_id']
+        
+        for i in range (len(allPersons)):
+            if((allPersons[i]['id'] == husbandID) or (allPersons[i]['id'] == wifeID)):
+                if marriageDate is not None:
+                    if allPersons[i]['alive'] is not True:
+                        if allPersons[i]['deathdate'] < marriageDate:
+                            print "For this Id Death before Marriage is not possible : " + husbandID + "  " + wifeID
+ 
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
-    forFamilies(parsedData)
-    forIndividual(parsedData)
+    f = forFamilies(parsedData)
+    ind = forIndividual(parsedData)
+    marriageBeforeDeath_US05(f,ind)
