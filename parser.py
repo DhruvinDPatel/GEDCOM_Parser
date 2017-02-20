@@ -2,11 +2,10 @@ import gedcom
 import datetime
 from prettytable import PrettyTable
 
-# Marriage before death, Divorce before death
-
+parsedData = gedcom.parse("sample.ged")
 today = datetime.datetime.now()
-allPersons = {}
-allFamilies = {}
+allPersons = []
+allFamilies = []
 
 def forIndividual(parsedData):    
     individual = list(parsedData.individuals)
@@ -29,8 +28,8 @@ def forIndividual(parsedData):
             deathDate = (temp.__getitem__('DEAT')).date
             person['deathdate'] = datetime.datetime.strptime(deathDate, '%d %b %Y')
         else:
-            person['deathdate'] = 'NA'
-            person['alive'] = 'Y'
+            person['deathdate'] = None
+            person['alive'] = True
 
         if temp.__contains__('DEAT'):
             person['age'] = (datetime.datetime.strptime(temp.death.date,'%d %b %Y') - datetime.datetime.strptime(temp.birth.date,'%d %b %Y')).days/365
@@ -63,7 +62,7 @@ def forIndividual(parsedData):
 
         dictlist = [person['id'],person['name'],person['gender'],person['birthdate'],person['age'],person['alive'],person['deathdate'],person['child'],person['spouses']]
         individualTable.add_row(dictlist)
-        allPersons[i] = person     
+        allPersons.append(person)
     print "Individuals"
     print(individualTable)
     return allPersons
@@ -120,17 +119,19 @@ def forFamilies(parsedData):
         
         dictlist2 = [family['Family_id'],family['marriage'],family['divorce'],family['husband_id'],family['husband_name'],family['wife_id'],family['wife_name'],family['child']]
         familyTable.add_row(dictlist2)
-        allFamilies[i] = family
+        allFamilies.append(family)
     print "Families"
     print(familyTable)
     return allFamilies
 
-def marriageBeforeDeath_US(allFamilies, allPersons):
-    for i in range(len(allFamilies):
-        if allFamilies[i]['marriage']:
-            for j in range(len(allPersons)):
-
+#implemented user story 07
+def ageLessThan150_US7(allPersons):
+    for i in range(len(allPersons)):
+        if allPersons[i]['age'] > 150:
+            print "For ID "+allPersons[i]['id']+" Age gt 150 is not possible"
+ 
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
-    forFamilies(parsedData)
-    forIndividual(parsedData)
+    f = forFamilies(parsedData)
+    ind = forIndividual(parsedData)
+    ageLessThan150_US7(ind)
