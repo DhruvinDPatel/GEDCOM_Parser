@@ -24,7 +24,7 @@ def forIndividual(parsedData):
         birthDate = datetime.datetime.strptime(temp.birth.date,'%d %b %Y')
 
         if temp.__contains__('DEAT'):
-            person['alive'] = None
+            person['alive'] = False
             deathDate = (temp.__getitem__('DEAT')).date
             person['deathdate'] = datetime.datetime.strptime(deathDate, '%d %b %Y')
         else:
@@ -136,19 +136,19 @@ def marriageBeforeDeath_US05(allFamilies, allPersons):
                     if allPersons[i]['alive'] is not True:
                         if allPersons[i]['deathdate'] < marriageDate:
                             print "For this Id Death before Marriage is not possible : " + husbandID + "  " + wifeID
+                            return False
 
 #implemented user story 07
 def ageLessThan150_US7(allPersons):
     for i in range(len(allPersons)):
         if allPersons[i]['age'] > 150:
             print "For ID "+allPersons[i]['id']+" Age gt 150 is not possible"
+            return False
 
- 
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
-    f = forFamilies(parsedData)
+    fam = forFamilies(parsedData)
     ind = forIndividual(parsedData)
 
-    marriageBeforeDeath_US05(f,ind)
-
+    marriageBeforeDeath_US05(fam,ind)
     ageLessThan150_US7(ind)
