@@ -145,6 +145,31 @@ def ageLessThan150_US7(allPersons):
             print "For ID "+allPersons[i]['id']+" Age gt 150 is not possible"
             return False
 
+# user story 02 birth before marriage
+def birthBeforeMarriage_US02(allFamilies, allPersons):
+    for i in range(len(allFamilies)):
+        husbandID = allFamilies[i]['husband_id']
+        wifeID = allFamilies[i]['wife_id']
+        birthDate = allPersons[i]['birthdate']
+        marriageDate = allFamilies[i]['marriage']
+
+        for i in range(len(allPersons)):
+            if (allPersons[i]['id'] == husbandID) or (allPersons[i]['id'] == wifeID):
+                if marriageDate is not None:
+                    if birthDate > marriageDate:
+                        print 'US02 violated - birth before marriage : ' + husbandID + '  ' + wifeID
+
+# user story 03 birth before death
+def birthBeforeDeath_US03 (allPersons):
+    for i in range (len(allPersons)):
+        personID = allPersons[i]['id']
+        birthDate = allPersons[i]['birthdate']
+        deathDate = allPersons[i]['deathdate']
+
+        if deathDate is not None:
+            if birthDate > deathDate:
+                print "US03 violated - person died before birth : " + personID        
+        
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
     fam = forFamilies(parsedData)
