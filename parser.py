@@ -2,7 +2,6 @@ import gedcom
 import datetime
 from prettytable import PrettyTable
 
-parsedData = gedcom.parse("sample.ged")
 today = datetime.datetime.now()
 allPersons = []
 allFamilies = []
