@@ -1,5 +1,6 @@
 import gedcom
 import parser
+import datetime
 
 def marriageBeforeDeath_US05(allFamilies, allPersons):
     for i in range(len(allFamilies)):
@@ -109,6 +110,48 @@ def birthBeforeDeath_US03 (allPersons):
             if birthDate > deathDate:
                 print "US03 violated - person died before birth : " + personID
 
+# Implemented User Story 01
+# Description: Dates (birth, marriage, divorce, death) should not be after the current date
+today = datetime.datetime.now()
+def datesBeforeCurrentDate_US01(allPersons,allFamilies):
+    for i in range(len(allPersons)):
+        if allPersons[i]['birthdate'] > today:
+            print "For ID "+allPersons[i]['id']+ ' ' + "Birthdate is after the current date"
+        if allPersons[i]['alive'] == "False":
+            if allPersons[i]['deathdate'] > today:
+                print "For ID "+allPersons[i]['id']+ ' ' + "Deathdate is after the current date"
+
+    for i in range(len(allFamilies)):
+        if allFamilies[i]['marriage'] != None:
+            if allFamilies[i]['marriage'] > today:
+                print "For ID "+allFamilies[i]['Family_id']+ ' ' + "Marriage is after the current date"
+        if allFamilies[i]['divorce'] != None:
+            if allFamilies[i]['divorce'] > today:
+                print "For ID "+allFamilies[i]['Family_id']+ ' ' + "Divorce is after the current date"
+    return False
+
+# Implemented User Story 10
+# Description: Marriage should be at least 14 years after birth of both spouses (parents must be at least 14 years old
+
+marriage_date = dict()
+all_persons_dict = dict()
+
+def marriageAfter14_US10(allPersons,allFamilies):
+    all_persons_dict = {x['id']:x for x in allPersons}
+    valid_marriage = dict()
+    for family in allFamilies:
+        husband_id = family['husband_id']
+        wife_id = family['wife_id']
+        marriage_date = family['marriage'].date() if family['marriage'] is not None else None
+        if marriage_date is not None and husband_id is not None and wife_id is not None:
+            husband_age = all_persons_dict[husband_id]['birthdate'].date()
+            wife_age = all_persons_dict[wife_id]['birthdate'].date()
+            if husband_age.year - marriage_date.year >= 14 and wife_age.year - marriage_date.year >= 14:
+                valid_marriage[family['Family_id']] = True
+            else:
+                valid_marriage[family['Family_id']] = False
+    return valid_marriage
+
                 
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
@@ -121,3 +164,5 @@ if __name__ == '__main__':
     birthBeforeMarriage_US02(fam, ind)
     birthAfterDeathOfParents_US_09(fam, ind)
     divorceBeforeDeath_US06(fam, ind)
+    datesBeforeCurrentDate_US01(ind,fam)    
+    marriageAfter14_US10(ind,fam)
