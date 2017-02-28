@@ -18,7 +18,7 @@ def marriageBeforeDeath_US05(allFamilies, allPersons):
 
 def divorceBeforeDeath_US06(allFamilies, allPersons):
     for i in range(len(allFamilies)):
-        hubandID = allFamilies[i]['husband_id']
+        husbandID = allFamilies[i]['husband_id']
         wifeID = allFamilies[i]['wife_id']
         divorceDate = allFamilies[i]['divorce']
 
@@ -39,7 +39,6 @@ def ageLessThan150_US7(allPersons):
 
 def birthAfterDeathOfParents_US_09(allPersons, allFamilies):
     for x in range(len(allFamilies)):
-        children = []                                                                  # List to store the IDs for children if there are more than one children
         fatherID = allFamilies[x]['husband_id']                                        # Get Father's ID
         motherID = allFamilies[x]['wife_id']                                           # Get Mother's ID
         childTypeCheck = allFamilies[x]['child']                                       # If only One child then it contains ID's else for checking the type (List or None)
