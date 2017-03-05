@@ -8,12 +8,12 @@ def marriageBeforeDeath_US05(allFamilies, allPersons):
         marriageDate = allFamilies[i]['marriage']
         wifeID = allFamilies[i]['wife_id']
         
-        for i in range (len(allPersons)):
+        for i in range(len(allPersons)):
             if((allPersons[i]['id'] == husbandID) or (allPersons[i]['id'] == wifeID)):
                 if marriageDate is not None:
                     if allPersons[i]['alive'] is not True:
                         if allPersons[i]['deathdate'] < marriageDate:
-                            print "For this Id Death before Marriage is not possible : " + husbandID + "  " + wifeID
+                            print "US05 Marriage Before Death Violated - For this Id Death before Marriage is not possible : " + husbandID + "  " + wifeID
                             return False
 
 def divorceBeforeDeath_US06(allFamilies, allPersons):
@@ -27,17 +27,17 @@ def divorceBeforeDeath_US06(allFamilies, allPersons):
                 if divorceDate is not None:
                     if allPersons[i]['alive'] is not True:
                         if allPersons[i]['deathdate'] < divorceDate:
-                           print "For this Id Death before Divorce is not possible : " + husbandID + "  " + wifeID
+                           print "US06 Divorce Before Death Violated - For this Id Death before Divorce is not possible : " + husbandID + "  " + wifeID
                            return False
                         
 #implemented user story 07
 def ageLessThan150_US7(allPersons):
     for i in range(len(allPersons)):
         if allPersons[i]['age'] > 150:
-            print "For ID "+allPersons[i]['id']+" Age gt 150 is not possible"
+            print "US07 Age less than 150 Violated - For ID "+allPersons[i]['id']+" Age gt 150 is not possible"
             return False
 
-def birthAfterDeathOfParents_US_09(allPersons, allFamilies):
+def birthAfterDeathOfParents_US_09(allFamilies, allPersons):
     for x in range(len(allFamilies)):
         fatherID = allFamilies[x]['husband_id']                                        # Get Father's ID
         motherID = allFamilies[x]['wife_id']                                           # Get Mother's ID
@@ -59,11 +59,15 @@ def birthAfterDeathOfParents_US_09(allPersons, allFamilies):
                             if(fatherDeathDate is not None and fatherDeathDate > childBirthDate):   # If father has a deathddate and its after the childbirth date
                                 pass
                             else:
-                                print "Father's Death date can't be before Child's Birth Date"
+                                print "US_09 Violated: Father's (" + fatherID + ") Death date can't be before Child's (" + currentChildID + ") Birth Date"
+                                print("Father death Date: " + str(fatherDeathDate))
+                                print("Child Birth Date: " + str(childBirthDate))
                             if(motherDeathDate is not None and motherDeathDate > childBirthDate):   # If mother has a deathdate and its after the childBirth Date
                                 pass  
                             else:
-                                print "Mother's Death date can't be before Child's Birth Date"
+                                print "US_09 Violated: Mother's (" + motherID + ") Death date can't be before Child's (" + currentChildID + ") Birth Date"
+                                print("Mother death Date: " + str(motherDeathDate))
+                                print("Child Birth Date: " + str(childBirthDate))
         else:                                                                           # If there is only one child, take childTypeCheck as ID
             for i in range(len(allPersons)):
                 if(allPersons[i]['id'] == fatherID):                                    # Getting dates
@@ -77,13 +81,16 @@ def birthAfterDeathOfParents_US_09(allPersons, allFamilies):
                         if(fatherDeathDate is not None and fatherDeathDate > childBirthDate):
                             pass
                         else:
-                            print "Father's Death date can't be before Child's Birth Date"
+                            print "US_09 Violated: Father's (" + fatherID + ") Death date can't be before Child's (" + childTypeCheck + ") Birth Date"
+                            print("Father death Date: " + str(fatherDeathDate))
+                            print("Child Birth Date: " + str(childBirthDate))
                         if(motherDeathDate is not None and motherDeathDate > childBirthDate):
                             pass  
                         else:
-                            print "Mother's Death date can't be before Child's Birth Date"
+                            print "US_09 Violated: Mother's (" + motherID + ") Death date can't be before Child's (" + childTypeCheck + ") Birth Date"
+                            print("Mother death Date: " + str(motherDeathDate))
+                            print("Child Birth Date: " + str(childBirthDate))
 
-                            
 # user story 02 birth before marriage
 def birthBeforeMarriage_US02(allFamilies, allPersons):
     for i in range(len(allFamilies)):
@@ -96,7 +103,7 @@ def birthBeforeMarriage_US02(allFamilies, allPersons):
             if (allPersons[i]['id'] == husbandID) or (allPersons[i]['id'] == wifeID):
                 if marriageDate is not None:
                     if birthDate > marriageDate:
-                        print 'US02 violated - birth before marriage : ' + husbandID + '  ' + wifeID
+                        print 'US02 Birth Before Marraige Violated - birth before marriage : ' + husbandID + '  ' + wifeID
 
 # user story 03 birth before death
 def birthBeforeDeath_US03 (allPersons):
@@ -107,7 +114,7 @@ def birthBeforeDeath_US03 (allPersons):
 
         if deathDate is not None:
             if birthDate > deathDate:
-                print "US03 violated - person died before birth : " + personID
+                print "US03 Birth Before Death Violated - person died before birth : " + personID
 
 # Implemented User Story 01
 # Description: Dates (birth, marriage, divorce, death) should not be after the current date
@@ -115,23 +122,22 @@ today = datetime.datetime.now()
 def datesBeforeCurrentDate_US01(allPersons,allFamilies):
     for i in range(len(allPersons)):
         if allPersons[i]['birthdate'] > today:
-            print "For ID "+allPersons[i]['id']+ ' ' + "Birthdate is after the current date"
+            print "US01 Dates Before current date Violated - For ID "+allPersons[i]['id']+ ' ' + "Birthdate is after the current date"
         if allPersons[i]['alive'] == "False":
             if allPersons[i]['deathdate'] > today:
-                print "For ID "+allPersons[i]['id']+ ' ' + "Deathdate is after the current date"
+                print "US01 Dates Before current date Violated - For ID "+allPersons[i]['id']+ ' ' + "Deathdate is after the current date"
 
     for i in range(len(allFamilies)):
         if allFamilies[i]['marriage'] != None:
             if allFamilies[i]['marriage'] > today:
-                print "For ID "+allFamilies[i]['Family_id']+ ' ' + "Marriage is after the current date"
+                print "US01 Dates Before current date Violated - For ID "+allFamilies[i]['Family_id']+ ' ' + "Marriage is after the current date"
         if allFamilies[i]['divorce'] != None:
             if allFamilies[i]['divorce'] > today:
-                print "For ID "+allFamilies[i]['Family_id']+ ' ' + "Divorce is after the current date"
+                print "US01 Dates Before current date Violated - For ID "+allFamilies[i]['Family_id']+ ' ' + "Divorce is after the current date"
     return False
 
 # Implemented User Story 10
 # Description: Marriage should be at least 14 years after birth of both spouses (parents must be at least 14 years old
-
 marriage_date = dict()
 all_persons_dict = dict()
 
@@ -149,8 +155,8 @@ def marriageAfter14_US10(allPersons,allFamilies):
                 valid_marriage[family['Family_id']] = True
             else:
                 valid_marriage[family['Family_id']] = False
+                print "US10 Marriage after 14 Violated - For id "+ family['Family_id']
     return valid_marriage
-
                 
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
