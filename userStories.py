@@ -158,6 +158,7 @@ def marriageAfter14_US10(allPersons,allFamilies):
                 print "US10 Marriage after 14 Violated - For id "+ family['Family_id']
     return valid_marriage
                 
+# In[]:                
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
     fam = parser.forFamilies(parsedData)
