@@ -7,6 +7,7 @@ parsedData = gedcom.parse("sample.ged")
 ind = parser.forIndividual(parsedData)
 fam = parser.forFamilies(parsedData)
 
+#Implemnted test cases for user story 07
 class TestMarriageBeforeDeath_US05(TestCase):
     def test_marriageBeforeDeath_US05_marriage_availibility(self):
         self.assertIsNotNone(fam[0]['marriage'], "ERROR: Family: US05: Marriage " + str(fam[0]['marriage']) + " Marriage Date cannot be None.")
@@ -23,7 +24,7 @@ class TestMarriageBeforeDeath_US05(TestCase):
     def test_marriageBeforeDeath_US05_ReturnsNone(self):
         self.assertIsNone(parser.marriageBeforeDeath_US05(fam, ind), "ERROR: Family: US05: Returns None Function can't return None.")
 
-#implemnted test cases for user story 07
+#Implemnted test cases for user story 07
 class TestAgeLessThan150_US7(TestCase):
     def test_ageLessThan150_US7_ageIsNone(self):
         self.assertIsNotNone(ind[0]['age'], "ERROR: Individual: US07: Age " + str(ind[0]['age']) + " Age cannot be None.")
