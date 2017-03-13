@@ -46,9 +46,14 @@ class TestAgeLessThan150_US7(unittest.TestCase):
         self.assertFalse(parser.ageLessThan150_US7(ind), "ERROR: Individual: US07: Returns False, Function can't return False.")
 
 # Reporting
-suite = unittest.TestLoader().loadTestsFromTestCase(TestMarriageBeforeDeath_US05,TestAgeLessThan150_US7) # Include test cases here 
-unittest.TextTestRunner(verbosity=2).run(suite)
-
+test_classes_to_run = [TestMarriageBeforeDeath_US05, TestAgeLessThan150_US7] # Include test cases here 
+loader = unittest.TestLoader() 
+suites_list = []
+for test_class in test_classes_to_run:
+    suite = loader.loadTestsFromTestCase(test_class)
+    suites_list.append(suite)
+big_suite = unittest.TestSuite(suites_list)
+runner = unittest.TextTestRunner(verbosity=2).run(big_suite)
 outfile = open("Report.html", "w")
 runner = HTMLTestRunner.HTMLTestRunner(
                 stream=outfile,
@@ -56,5 +61,5 @@ runner = HTMLTestRunner.HTMLTestRunner(
                 description='This demonstrates the report output by ssw555BB2017Spring Team'
                 )
 
-runner.run(suite)
+runner.run(big_suite)
 outfile.close()
