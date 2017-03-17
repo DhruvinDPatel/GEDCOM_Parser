@@ -2,6 +2,7 @@ import gedcom
 import datetime
 from prettytable import PrettyTable
 
+parsedData = gedcom.parse("sample.ged")
 today = datetime.datetime.now()
 allPersons = []
 allFamilies = []
@@ -122,3 +123,32 @@ def forFamilies(parsedData):
     print "Families"
     print(familyTable)
     return allFamilies
+
+def marriageBeforeDeath_US05(allFamilies, allPersons):
+    for i in range(len(allFamilies)):
+        husbandID = allFamilies[i]['husband_id']
+        marriageDate = allFamilies[i]['marriage']
+        wifeID = allFamilies[i]['wife_id']
+        
+        for i in range (len(allPersons)):
+            if((allPersons[i]['id'] == husbandID) or (allPersons[i]['id'] == wifeID)):
+                if marriageDate is not None:
+                    if allPersons[i]['alive'] is not True:
+                        if allPersons[i]['deathdate'] < marriageDate:
+                            print "For this Id Death before Marriage is not possible : " + husbandID + "  " + wifeID
+                            return False
+
+#implemented user story 07
+def ageLessThan150_US7(allPersons):
+    for i in range(len(allPersons)):
+        if allPersons[i]['age'] > 150:
+            print "For ID "+allPersons[i]['id']+" Age gt 150 is not possible"
+            return False
+
+if __name__ == '__main__':
+    parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
+    fam = forFamilies(parsedData)
+    ind = forIndividual(parsedData)
+
+    marriageBeforeDeath_US05(fam,ind)
+    ageLessThan150_US7(ind)
