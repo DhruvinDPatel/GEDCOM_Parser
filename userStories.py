@@ -113,7 +113,7 @@ def list_living_married_US30(allFamilies, allPersons):
                     list_married_and_alive.add(name) 
 
 
-    return list_married_and_alive
+    return list_married_and_alive   
     '''print "\nList of people who are married and alive are as follows: \n"
     print "\n".join(str(x) for x in list_married_and_alive)
     print "\n"'''
