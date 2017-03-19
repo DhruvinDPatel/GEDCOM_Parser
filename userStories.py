@@ -1,6 +1,7 @@
 import gedcom
 import parser
 import datetime
+from collections import Counter
 
 def marriageBeforeDeath_US05(allFamilies, allPersons):
     for i in range(len(allFamilies)):
@@ -157,13 +158,38 @@ def marriageAfter14_US10(allPersons,allFamilies):
                 valid_marriage[family['Family_id']] = False
                 print "US10 Marriage after 14 Violated - For id "+ family['Family_id']
     return valid_marriage
-                
+
+# Implemented User Story 14
+# No more than five siblings should be born at the same time
+def multiple_births_less_5(allPersons,allFamilies):
+    for family in allFamilies:
+        if family['child'] != None:
+            sibling_uids = family['child']
+        siblings = list(x for x in allPersons if x['id'] in sibling_uids)
+        sib_birthdays = []
+        for sibling in siblings:
+            sib_birthdays.append(sibling['birthdate'])
+        result = Counter(sib_birthdays).most_common(1)
+        for (a,b) in result:
+            if b > 5:
+                print "US14 Less than 5 siblings born at once Violated - For id "+ family['Family_id']
+                return False
+    return True
+    
+# Implemented User Story 15
+# There should be fewer than 15 siblings in a family
+def fewer_than_fifteen_siblings(allFamilies):
+    for family in allFamilies:
+        if family['child'] != None and len(family['child']) >= 15:
+            print "US15 fewer than 15 siblings  Violated - For id "+ family['Family_id']
+            return False
+    return True
 # In[]:                
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
     fam = parser.forFamilies(parsedData)
     ind = parser.forIndividual(parsedData)
-
+# In[]:
     marriageBeforeDeath_US05(fam,ind)
     ageLessThan150_US7(ind)
     birthBeforeDeath_US03 (ind)
@@ -172,3 +198,5 @@ if __name__ == '__main__':
     divorceBeforeDeath_US06(fam, ind)
     datesBeforeCurrentDate_US01(ind,fam)    
     marriageAfter14_US10(ind,fam)
+    fewer_than_fifteen_siblings(fam)
+    multiple_births_less_5(ind,fam)
