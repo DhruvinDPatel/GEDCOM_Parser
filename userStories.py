@@ -92,6 +92,49 @@ def birthAfterDeathOfParents_US_09(allFamilies, allPersons):
                             print("Mother death Date: " + str(motherDeathDate))
                             print("Child Birth Date: " + str(childBirthDate))
 
+#User story 30: List living married
+def list_living_married_US30(allFamilies, allPersons):
+    list_married_and_alive = set()
+    for x in range(len(allFamilies)):
+        husbandID = allFamilies[x]['husband_id']
+        wifeID = allFamilies[x]['wife_id']
+
+        
+        for p in range(len(allPersons)):
+            if(allPersons[p]['id'] == husbandID):
+                if(allPersons[p]['alive'] == True):
+                    name = allPersons[p]['name']
+                    list_married_and_alive.add(name)                        
+
+        for p in range(len(allPersons)):
+            if(allPersons[p]['id'] == wifeID):
+                if(allPersons[p]['alive'] == True):
+                    name = allPersons[p]['name']
+                    list_married_and_alive.add(name) 
+
+
+    return list_married_and_alive
+    '''print "\nList of people who are married and alive are as follows: \n"
+    print "\n".join(str(x) for x in list_married_and_alive)
+    print "\n"'''
+
+
+# US35 List of people who were born recently
+
+def people_born_recently_US_35(allPersons):
+    recently_born = []
+    today = datetime.datetime.now()
+    for i in range(len(allPersons)):
+        bday = allPersons[i]['birthdate']
+        days = int((today - bday).days)
+
+        if(days == 30 or days < 30):
+            recently_born.append(allPersons[i]['name'])
+
+    for p in range(len(recently_born)):
+        print(recently_born[p])
+
+
 # user story 02 birth before marriage
 def birthBeforeMarriage_US02(allFamilies, allPersons):
     for i in range(len(allFamilies)):
@@ -184,12 +227,15 @@ def fewer_than_fifteen_siblings(allFamilies):
             print "US15 fewer than 15 siblings  Violated - For id "+ family['Family_id']
             return False
     return True
+
 # In[]:                
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
     fam = parser.forFamilies(parsedData)
     ind = parser.forIndividual(parsedData)
 # In[]:
+    people_born_recently_US_35(ind)
+    list_living_married_US30(fam, ind)
     marriageBeforeDeath_US05(fam,ind)
     ageLessThan150_US7(ind)
     birthBeforeDeath_US03 (ind)
