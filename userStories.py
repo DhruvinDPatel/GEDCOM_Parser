@@ -1,5 +1,5 @@
 import gedcom
-import parser
+import parser_gedcom
 import datetime
 from collections import Counter
 
@@ -42,12 +42,14 @@ def birthAfterDeathOfParents_US_09(allFamilies, allPersons):
     for x in range(len(allFamilies)):
         fatherID = allFamilies[x]['husband_id']                                        # Get Father's ID
         motherID = allFamilies[x]['wife_id']                                           # Get Mother's ID
-        childTypeCheck = allFamilies[x]['child']                                       # If only One child then it contains ID's else for checking the type (List or None)
+        childTypeCheck = allFamilies[x]['child']  
+        fatherDeathDate = None
+        motherDeathDate = None                                     # If only One child then it contains ID's else for checking the type (List or None)
         if type(childTypeCheck) is None:                                               # If there are no child, No Error
             pass
         elif(type(childTypeCheck) is list):                                            # if there are multiple children
             for z in range(len(childTypeCheck)):
-                currentChildID = childTypeCheck[z]                                     # Getting the id or current child
+                currentChildID = childTypeCheck[z]                                                                          # Getting the id or current child
                 for i in range(len(allPersons)):                                       # Looping throug all person dictionary to match the IDs and extract birth and date date
                     if(allPersons[i]['id'] == fatherID):
                         fatherDeathDate = allPersons[i]['deathdate']
@@ -137,17 +139,26 @@ def people_born_recently_US_35(allPersons):
 
 # user story 02 birth before marriage
 def birthBeforeMarriage_US02(allFamilies, allPersons):
+    unique_id = set()
     for i in range(len(allFamilies)):
         husbandID = allFamilies[i]['husband_id']
         wifeID = allFamilies[i]['wife_id']
-        birthDate = allPersons[i]['birthdate']
         marriageDate = allFamilies[i]['marriage']
 
-        for i in range(len(allPersons)):
-            if (allPersons[i]['id'] == husbandID) or (allPersons[i]['id'] == wifeID):
+        for x in range(len(allPersons)):
+            if (allPersons[x]['id'] == husbandID): 
+                birthdate = allPersons[x]['birthdate']
                 if marriageDate is not None:
-                    if birthDate > marriageDate:
-                        print 'US02 Birth Before Marraige Violated - birth before marriage : ' + husbandID + '  ' + wifeID
+                    if birthdate > marriageDate:
+                        unique_id.add(husbandID) 
+
+            if (allPersons[x]['id'] == wifeID):
+                birthdate = allPersons[x]['birthdate']
+                if marriageDate is not None:
+                    if birthdate > marriageDate:
+                       unique_id.add(wifeID)
+
+    print " ".join("US02 violated - Birth before Marriage - For ID: " + str(x) for x in unique_id)
 
 # user story 03 birth before death
 def birthBeforeDeath_US03 (allPersons):
@@ -231,8 +242,8 @@ def fewer_than_fifteen_siblings(allFamilies):
 # In[]:                
 if __name__ == '__main__':
     parsedData = gedcom.parse("sample.ged")     # Provide gedcom file path here
-    fam = parser.forFamilies(parsedData)
-    ind = parser.forIndividual(parsedData)
+    fam = parser_gedcom.forFamilies(parsedData)
+    ind = parser_gedcom.forIndividual(parsedData)
 # In[]:
     people_born_recently_US_35(ind)
     list_living_married_US30(fam, ind)
