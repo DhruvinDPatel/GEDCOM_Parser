@@ -1,16 +1,13 @@
 import unittest
-import parser
+import parser_gedcom
 import gedcom
 import datetime
 import HTMLTestRunner
 
-# In[]
+parsed_data = gedcom.parse("sample.ged")
+fam = parser.for_families(parsed_data)
+ind = parser.for_individuals(parsed_data)
 
-parsedData = gedcom.parse("sample.ged")
-fam = parser.forFamilies(parsedData)
-ind = parser.forIndividual(parsedData)
-
-# In[]:
 #Implemnted test cases for user story 07
 class TestMarriageBeforeDeath_US05(unittest.TestCase):
     def test_marriageBeforeDeath_US05_marriage_availibility(self):

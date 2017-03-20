@@ -3,13 +3,13 @@ import datetime
 from prettytable import PrettyTable
 
 today = datetime.datetime.now()
-allPersons = []
-allFamilies = []
+all_persons = []
+all_families = []
 
-def forIndividual(parsedData):    
-    individual = list(parsedData.individuals)
-    individualTable = PrettyTable()
-    individualTable.field_names = ["ID", "Name", "Gender", "Birthday", "Age", "Alive", "Death", "Child", "Spouse"]
+def for_individuals(parsed_data):    
+    individual = list(parsed_data.individuals)
+    individual_table = PrettyTable()
+    individual_table.field_names = ["ID", "Name", "Gender", "Birthday", "Age", "Alive", "Death", "Child", "Spouse"]
 
     for i in range(len(individual)):
         temp = individual[i]
@@ -60,16 +60,16 @@ def forIndividual(parsedData):
             person['child'] = None
 
         dictlist = [person['id'],person['name'],person['gender'],person['birthdate'],person['age'],person['alive'],person['deathdate'],person['child'],person['spouses']]
-        individualTable.add_row(dictlist)
-        allPersons.append(person)
+        individual_table.add_row(dictlist)
+        all_persons.append(person)
     print "Individuals"
-    print(individualTable)
-    return allPersons
+    print(individual_table)
+    return all_persons
 
-def forFamilies(parsedData):
-    fa = list(parsedData.families)
-    familyTable=PrettyTable()
-    familyTable.field_names = ["ID","Married","Divorced","Husband_ID","Husband Name", "Wife Id", "Wife Name", "Children"]
+def for_families(parsed_data):
+    fa = list(parsed_data.families)
+    family_table=PrettyTable()
+    family_table.field_names = ["ID","Married","Divorced","Husband_ID","Husband Name", "Wife Id", "Wife Name", "Children"]
 
     for i in range(len(fa)):
         f = fa[i]
@@ -117,8 +117,8 @@ def forFamilies(parsedData):
             family['wife_name'] = None
         
         dictlist2 = [family['Family_id'],family['marriage'],family['divorce'],family['husband_id'],family['husband_name'],family['wife_id'],family['wife_name'],family['child']]
-        familyTable.add_row(dictlist2)
-        allFamilies.append(family)
+        family_table.add_row(dictlist2)
+        all_families.append(family)
     print "Families"
-    print(familyTable)
-    return allFamilies
+    print(family_table)
+    return all_families
