@@ -259,7 +259,19 @@ def US21_correct_gender_for_role(all_families,all_persons):
                 else:
                     print "ERROR: FAMILY: US 21: Correct gender for role is violated for wife_id: "+all_persons[i]['id']
 
+def US23_unique_name_unique_dob(allPersons):
+    name_birthdate_list = []
+    for i in range(len(allPersons)):
+        name = allPersons[i]['name']
+        date_of_birth = str(allPersons[i]['birthdate'])
+        temp = (name, date_of_birth)
+        name_birthdate_list.append(temp)
 
+    a = dict(Counter(name_birthdate_list))
+    for k, v in a.iteritems():
+        if v > 1:
+            print "ERROR INDIVIDUAL: US23: Unique name Unique date_of_birth violated for: " + str(k)
+            
 if __name__ == '__main__':
     parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
     fam = parser_gedcom.for_families(parsed_data)
