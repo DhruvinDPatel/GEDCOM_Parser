@@ -102,8 +102,7 @@ def US30_list_living_married(all_families, all_persons):
     for x in range(len(all_families)):
         husband_id = all_families[x]['husband_id']
         wife_id = all_families[x]['wife_id']
-
-        
+     
         for p in range(len(all_persons)):
             if(all_persons[p]['id'] == husband_id):
                 if(all_persons[p]['alive'] == True):
@@ -118,9 +117,7 @@ def US30_list_living_married(all_families, all_persons):
 
     return list_married_and_alive   
 
-
 # US35 List of people who were born recently
-
 def US35_people_born_recently(all_persons):
     recently_born = []
     for i in range(len(all_persons)):
@@ -259,6 +256,39 @@ def US21_correct_gender_for_role(all_families,all_persons):
                 else:
                     print "ERROR: FAMILY: US 21: Correct gender for role is violated for wife_id: "+all_persons[i]['id']
 
+def US23_unique_name_unique_dob(allPersons):
+    name_birthdate_list = []
+    for i in range(len(allPersons)):
+        name = allPersons[i]['name']
+        date_of_birth = str(allPersons[i]['birthdate'])
+        temp = (name, date_of_birth)
+        name_birthdate_list.append(temp)
+
+    a = dict(Counter(name_birthdate_list))
+    for k, v in a.iteritems():
+        if v > 1:
+            print "ERROR INDIVIDUAL: US23: Unique name Unique date_of_birth violated for: "+str(k)
+
+def US25_unique_firstname_in_family(allPersons, allFamilies):
+    family_child_name_birthdat = []
+    name_birthdate_list = []
+    
+    for i in range(len(allFamilies)):
+        child = allFamilies[i]['child']
+        if child == None:
+            return False
+        else:
+            for j in range(len(allPersons)):
+                if allPersons[j]['id'] in child:
+                    name = allPersons[j]['name']
+                    date_of_birth = str(allPersons[j]['birthdate'])
+                    temp = (name, date_of_birth)
+                    name_birthdate_list.append(temp)
+                    
+                    a = dict(Counter(name_birthdate_list))
+                    for k, v in a.iteritems():
+                        if v > 1:
+                            print "ERROR INDIVIDUAL: US25: Unique first name in family: "+str(k)
 
 if __name__ == '__main__':
     parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
@@ -285,3 +315,5 @@ if __name__ == '__main__':
     US14_multiple_births_less_5(ind,fam)
     US16_male_last_name(ind)
     US21_correct_gender_for_role(fam,ind)
+    US23_unique_name_unique_dob(ind)
+    US25_unique_firstname_in_family(ind, fam)
