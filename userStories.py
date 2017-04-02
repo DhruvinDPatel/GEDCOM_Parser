@@ -102,9 +102,8 @@ def US30_list_living_married(all_families, all_persons):
     for x in range(len(all_families)):
         husband_id = all_families[x]['husband_id']
         wife_id = all_families[x]['wife_id']
-
-        
-        for p in range(len(all_persons)):
+		
+		for p in range(len(all_persons)):
             if(all_persons[p]['id'] == husband_id):
                 if(all_persons[p]['alive'] == True):
                     name = all_persons[p]['name']
@@ -118,9 +117,7 @@ def US30_list_living_married(all_families, all_persons):
 
     return list_married_and_alive   
 
-
 # US35 List of people who were born recently
-
 def US35_people_born_recently(all_persons):
     recently_born = []
     for i in range(len(all_persons)):
@@ -271,7 +268,72 @@ def US23_unique_name_unique_dob(allPersons):
     for k, v in a.iteritems():
         if v > 1:
             print "ERROR INDIVIDUAL: US23: Unique name Unique date_of_birth violated for: " + str(k)
-            
+
+def US25_unique_firstname_in_family(allPersons, allFamilies):
+    family_child_name_birthdat = []
+    name_birthdate_list = []
+    
+    for i in range(len(allFamilies)):
+        child = allFamilies[i]['child']
+        if child == None:
+            return False
+        else:
+            for j in range(len(allPersons)):
+                if allPersons[j]['id'] in child:
+                    name = allPersons[j]['name']
+                    date_of_birth = str(allPersons[j]['birthdate'])
+                    temp = (name, date_of_birth)
+                    name_birthdate_list.append(temp)
+                    
+                    a = dict(Counter(name_birthdate_list))
+                    for k, v in a.iteritems():
+                        if v > 1:
+                            print "ERROR INDIVIDUAL: US25: Unique first name in family: "+str(k)
+
+# US36 - List recent deaths
+# Description - List all people in a GEDCOM file who died in the last 30 days
+def US36_Individual_died_within_last_30_days(all_persons):
+    for person in all_persons:
+        if person['alive'] != True:
+            death_date = (person['deathdate'].date() - today.date())            
+            if death_date.days < 0 : print "ERROR: US36: Died within last 30 days Violated - Age cannot be LESS than 0"            
+            if death_date.days < 30:
+                print "ERROR: INDIVIDUAL: US36: Died within last 30 days Violated - For id "+ person['id']
+            return False
+    return True
+
+# US37 - List recent survivors
+# Description - List all living spouses and descendants of people in a GEDCOM file who died in the last 30 days
+def US37_Spouses_Descendants_died_within_last_30_days(all_persons,all_families):
+    spouse_descendants = []
+    died_within_last_30_days = []
+    alive_descendats = []
+    for person in all_persons:
+        if person['alive'] != True:
+            death_date = (person['deathdate'].date() - today.date())            
+            if death_date.days < 0 : print "ERROR: Age cannot be LESS than 0"                        
+            if death_date.days < 30:
+                died_within_last_30_days.append(person['id'])
+                
+    for died in died_within_last_30_days:
+        for family in all_families:
+            if died in family['wife_id']:
+                spouse_descendants.append(family['husband_id'])
+                if family['child'] != None:                
+                    spouse_descendants.append(family['child'])
+            if died in family['husband_id']:
+                spouse_descendants.append(family['wife_id'])
+                if family['child'] != None:                
+                    spouse_descendants.append(family['child'])
+                    
+    for alive in spouse_descendants:
+        for individual in all_persons:
+            if alive in individual['id']:
+                if individual['alive'] == True: 
+                    alive_descendats.append(individual['id'])
+    print "List all living spouses and descendants of people in a GEDCOM file who died in the last 30 days are" + ' ' + ', '.join(alive_descendats)
+    return alive_descendats
+
 if __name__ == '__main__':
     parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
     fam = parser_gedcom.for_families(parsed_data)
@@ -297,3 +359,7 @@ if __name__ == '__main__':
     US14_multiple_births_less_5(ind,fam)
     US16_male_last_name(ind)
     US21_correct_gender_for_role(fam,ind)
+    US23_unique_name_unique_dob(ind)
+    US25_unique_firstname_in_family(ind, fam)
+    US36_Individual_died_within_last_30_days(ind)
+    US37_Spouses_Descendants_died_within_last_30_days(ind,fam)

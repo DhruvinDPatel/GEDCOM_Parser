@@ -97,7 +97,7 @@
 2 DATE 1 JAN 2016
 1 FAMC @F2@
 0 @I10@ INDI
-1 NAME Second /Sen/
+1 NAME First /Sen/
 2 GIVN Second
 2 SURN Sen
 1 SEX M
