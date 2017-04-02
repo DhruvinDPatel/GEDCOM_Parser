@@ -102,8 +102,8 @@ def US30_list_living_married(all_families, all_persons):
     for x in range(len(all_families)):
         husband_id = all_families[x]['husband_id']
         wife_id = all_families[x]['wife_id']
-     
-        for p in range(len(all_persons)):
+		
+		for p in range(len(all_persons)):
             if(all_persons[p]['id'] == husband_id):
                 if(all_persons[p]['alive'] == True):
                     name = all_persons[p]['name']
@@ -267,7 +267,7 @@ def US23_unique_name_unique_dob(allPersons):
     a = dict(Counter(name_birthdate_list))
     for k, v in a.iteritems():
         if v > 1:
-            print "ERROR INDIVIDUAL: US23: Unique name Unique date_of_birth violated for: "+str(k)
+            print "ERROR INDIVIDUAL: US23: Unique name Unique date_of_birth violated for: " + str(k)
 
 def US25_unique_firstname_in_family(allPersons, allFamilies):
     family_child_name_birthdat = []
@@ -333,8 +333,6 @@ def US37_Spouses_Descendants_died_within_last_30_days(all_persons,all_families):
                     alive_descendats.append(individual['id'])
     print "List all living spouses and descendants of people in a GEDCOM file who died in the last 30 days are" + ' ' + ', '.join(alive_descendats)
     return alive_descendats
-
-# In[]:
 
 if __name__ == '__main__':
     parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
