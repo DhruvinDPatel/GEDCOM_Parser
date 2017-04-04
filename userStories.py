@@ -397,14 +397,34 @@ def US27_include_current_age(allPersons):
 def US38_upcoming_birthdays(all_persons):
     today_m_d_parsed = datetime.datetime.strptime(today.strftime("%m-%d"),"%m-%d")  # used to remove year from full date
     for i in range(len(all_persons)):
-        if all_persons[i]['alive'] == True:
-            for x in range(len(all_persons)):
-                birthdate = all_persons[x]['birthdate']
-                person = all_persons[x]['id']
-                birthdate_object = datetime.datetime.strptime(birthdate.strftime("%m-%d"),"%m-%d")
-                date_difference = birthdate_object - today_m_d_parsed
-                if (date_difference <= datetime.timedelta(days=30) and date_difference > datetime.timedelta(days=0)) or (date_difference <=datetime.timedelta(days=365) and date_difference > datetime.timedelta(days=335)):
-                    print 'US38: Upcoming Birthday for person ID ' + str(person)
+        alive = all_persons[i]['alive']
+        birthdate = all_persons[i]['birthdate']
+        person = all_persons[i]['id']
+
+        if alive == True:
+            birthdate_object = datetime.datetime.strptime(birthdate.strftime("%m-%d"),"%m-%d")
+            date_difference = birthdate_object - today_m_d_parsed
+            if (date_difference <= datetime.timedelta(days=30) and date_difference > datetime.timedelta(days=0)) or (date_difference <=datetime.timedelta(days=365) and date_difference > datetime.timedelta(days=335)):
+                print 'US38: Upcoming Birthday for person ID ' + str(person)
+		
+#US39 All living couples whose marriage anniversaries occur in the next 30 days
+def US39_upcoming_anniversaries(all_persons, all_families):
+    today_m_d_parsed = datetime.datetime.strptime(today.strftime("%m-%d"),"%m-%d")  # used to remove year from full date
+    for i in range(len(all_families)):
+        anniversary = all_families[i]['marriage']
+        family_id = all_families[i]['Family_id']
+
+        for x in range (len(all_persons)):
+            alive = all_persons[x]['alive']
+
+        if alive == True:
+            if anniversary != None:
+                    if all_persons[x]['alive'] == True:
+                        anniversary_object = datetime.datetime.strptime(anniversary.strftime("%m-%d"), "%m-%d")
+                        date_difference = anniversary_object - today_m_d_parsed
+                        if (date_difference <= datetime.timedelta(days=30) and date_difference > datetime.timedelta(days=0)) or (
+                                datetime.timedelta(days=365) >= date_difference > datetime.timedelta(days=335)):
+                            print 'US39: Upcoming Anniversary for family ID' + str(family_id)
 
 if __name__ == '__main__':
 	parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
@@ -443,3 +463,4 @@ if __name__ == '__main__':
 	US28_order_siblings_by_age(ind, fam)
 	US27_include_current_age(ind)
 	US38_upcoming_birthdays(ind)
+	US39_upcoming_anniversaries(ind,fam)
