@@ -392,6 +392,19 @@ def US27_include_current_age(allPersons):
 		name = allPersons[x]['name']
 		age = allPersons[x]['age']
 		print name + "\t:" + id + "\t:" + str(age)
+		
+# US38 All living people with birthdays in the next 30 days
+def US38_upcoming_birthdays(all_persons):
+    today_m_d_parsed = datetime.datetime.strptime(today.strftime("%m-%d"),"%m-%d")  # used to remove year from full date
+    for i in range(len(all_persons)):
+        if all_persons[i]['alive'] == True:
+            for x in range(len(all_persons)):
+                birthdate = all_persons[x]['birthdate']
+                person = all_persons[x]['id']
+                birthdate_object = datetime.datetime.strptime(birthdate.strftime("%m-%d"),"%m-%d")
+                date_difference = birthdate_object - today_m_d_parsed
+                if (date_difference <= datetime.timedelta(days=30) and date_difference > datetime.timedelta(days=0)) or (date_difference <=datetime.timedelta(days=365) and date_difference > datetime.timedelta(days=335)):
+                    print 'US38: Upcoming Birthday for person ID ' + str(person)
 
 if __name__ == '__main__':
 	parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
@@ -429,3 +442,4 @@ if __name__ == '__main__':
 	US37_Spouses_Descendants_died_within_last_30_days(ind,fam)
 	US28_order_siblings_by_age(ind, fam)
 	US27_include_current_age(ind)
+	US38_upcoming_birthdays(ind)
