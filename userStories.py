@@ -426,6 +426,31 @@ def US39_upcoming_anniversaries(all_persons, all_families):
                                 datetime.timedelta(days=365) >= date_difference > datetime.timedelta(days=335)):
                             print 'US39: Upcoming Anniversary for family ID' + str(family_id)
 
+# US29 List of deceased individuals in GEDCOM file
+def US29_list_of_deceased(all_persons):
+    deceased_all = []
+    for person in range(len(all_persons)):
+        alive = all_persons[person]['alive']
+        if not alive:
+            deceased_all.append(all_persons[person]['name'])
+
+    return deceased_all
+
+# US31 List of all living people over 30 who have never been married
+def US31_list_alive_over30_single(all_persons):
+    alive_over30_single = []
+    for person in range(len(all_persons)):
+        alive = all_persons[person]['alive']
+        current_age = all_persons[person]['age']
+        married = all_persons[person]['spouses']
+        person_name = all_persons[person]['name']
+        if alive == True:
+            if current_age >= 30:
+                if married == None:
+                    alive_over30_single.append(person_name)
+
+    return alive_over30_single
+
 if __name__ == '__main__':
 	parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
 	fam = parser_gedcom.for_families(parsed_data)
@@ -439,6 +464,14 @@ if __name__ == '__main__':
 	print "\nUS30 List of people who are married and alive are as follows: "
 	print "| ".join(str(x) for x in living_married)
 
+	deceased_all = US29_list_of_deceased(ind)
+    	print "\nUS29 List of deceased are as follows: "
+    	print "| ".join(str(deceased) for deceased in deceased_all)
+	
+	alive_over30_single = US31_list_alive_over30_single(ind)
+    	print "\nUS31 List of persons single above 30 are as follows: "
+    	print "| ".join(str(single) for single in alive_over30_single)
+	
 	US05_marriage_before_death(fam,ind)
 	US07_age_less_than_150(ind)
 	US03_birth_before_death(ind)
