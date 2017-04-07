@@ -395,61 +395,62 @@ def US27_include_current_age(allPersons):
 		
 # US38 All living people with birthdays in the next 30 days
 def US38_upcoming_birthdays(all_persons):
-    today_m_d_parsed = datetime.datetime.strptime(today.strftime("%m-%d"),"%m-%d")  # used to remove year from full date
-    for i in range(len(all_persons)):
-        alive = all_persons[i]['alive']
-        birthdate = all_persons[i]['birthdate']
-        person = all_persons[i]['id']
+	today_m_d_parsed = datetime.datetime.strptime(today.strftime("%m-%d"),"%m-%d")  # used to remove year from full date
+	for i in range(len(all_persons)):
+		alive = all_persons[i]['alive']
+		birthdate = all_persons[i]['birthdate']
+		person = all_persons[i]['id']
 
-        if alive == True:
-            birthdate_object = datetime.datetime.strptime(birthdate.strftime("%m-%d"),"%m-%d")
-            date_difference = birthdate_object - today_m_d_parsed
-            if (date_difference <= datetime.timedelta(days=30) and date_difference > datetime.timedelta(days=0)) or (date_difference <=datetime.timedelta(days=365) and date_difference > datetime.timedelta(days=335)):
-                print 'US38: Upcoming Birthday for person ID ' + str(person)
+		if alive == True:
+			if (birthdate.date().year >=1900):
+				birthdate_object = datetime.datetime.strptime(birthdate.strftime("%m-%d"),"%m-%d")
+				date_difference = birthdate_object - today_m_d_parsed
+				if (date_difference <= datetime.timedelta(days=30) and date_difference > datetime.timedelta(days=0)) or (date_difference <=datetime.timedelta(days=365) and date_difference > datetime.timedelta(days=335)):
+					print "US38: Upcoming Birthday for person ID " + str(person) + " with date " + str(birthdate.date().month) + "/" + str(birthdate.date().day)
 		
 #US39 All living couples whose marriage anniversaries occur in the next 30 days
 def US39_upcoming_anniversaries(all_persons, all_families):
-    today_m_d_parsed = datetime.datetime.strptime(today.strftime("%m-%d"),"%m-%d")  # used to remove year from full date
-    for i in range(len(all_families)):
-        anniversary = all_families[i]['marriage']
-        family_id = all_families[i]['Family_id']
+	today_m_d_parsed = datetime.datetime.strptime(today.strftime("%m-%d"),"%m-%d")  # used to remove year from full date
+	for i in range(len(all_families)):
+		anniversary = all_families[i]['marriage']
+		family_id = all_families[i]['Family_id']
 
-        for x in range (len(all_persons)):
-            alive = all_persons[x]['alive']
+		for x in range (len(all_persons)):
+			alive = all_persons[x]['alive']
 
-        if alive == True:
-            if anniversary != None:
-                    if all_persons[x]['alive'] == True:
-                        anniversary_object = datetime.datetime.strptime(anniversary.strftime("%m-%d"), "%m-%d")
-                        date_difference = anniversary_object - today_m_d_parsed
-                        if (date_difference <= datetime.timedelta(days=30) and date_difference > datetime.timedelta(days=0)) or (
-                                datetime.timedelta(days=365) >= date_difference > datetime.timedelta(days=335)):
-                            print 'US39: Upcoming Anniversary for family ID' + str(family_id)
+		if alive == True:
+			if anniversary != None:
+					if all_persons[x]['alive'] == True:
+						anniversary_object = datetime.datetime.strptime(anniversary.strftime("%m-%d"), "%m-%d")
+						date_difference = anniversary_object - today_m_d_parsed
+						if (date_difference <= datetime.timedelta(days=30) and date_difference > datetime.timedelta(days=0)) or (
+								datetime.timedelta(days=365) >= date_difference > datetime.timedelta(days=335)):
+							print "US39: Upcoming Anniversary for family ID " + str(family_id) + " with date " + str(anniversary.date().month) + "/" + str(anniversary.date().day)
 
 # US29 List of deceased individuals in GEDCOM file
 def US29_list_of_deceased(all_persons):
-    deceased_all = []
-    for person in range(len(all_persons)):
-        alive = all_persons[person]['alive']
-        if not alive:
-            deceased_all.append(all_persons[person]['name'])
-
-    return deceased_all
+	deceased_all = []
+	for person in range(len(all_persons)):
+		alive = all_persons[person]['alive']
+		if not alive:
+			deceased_all.append(all_persons[person]['name'])
+	print "US29: IND: List of all deceased:" + join(str(x) for x in deceased_all)
+	return deceased_all
 
 # US31 List of all living people over 30 who have never been married
 def US31_list_alive_over30_single(all_persons):
-    alive_over30_single = []
-    for person in range(len(all_persons)):
-        alive = all_persons[person]['alive']
-        current_age = all_persons[person]['age']
-        married = all_persons[person]['spouses']
-        person_name = all_persons[person]['name']
-        if alive == True:
-            if current_age >= 30:
-                if married == None:
-                    alive_over30_single.append(person_name)
-
-    return alive_over30_single
+	alive_over30_single = []
+	for person in range(len(all_persons)):
+		alive = all_persons[person]['alive']
+		current_age = all_persons[person]['age']
+		married = all_persons[person]['spouses']
+		person_name = all_persons[person]['name']
+		if alive == True:
+			if current_age >= 30:
+				if married == None:
+					alive_over30_single.append(person_name)
+	print "US31: IND: List of all deceased:" + join(str(x) for x in alive_over30_single)
+	return alive_over30_single
 
 if __name__ == '__main__':
 	parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
@@ -464,14 +465,6 @@ if __name__ == '__main__':
 	print "\nUS30 List of people who are married and alive are as follows: "
 	print "| ".join(str(x) for x in living_married)
 
-	deceased_all = US29_list_of_deceased(ind)
-    	print "\nUS29 List of deceased are as follows: "
-    	print "| ".join(str(deceased) for deceased in deceased_all)
-	
-	alive_over30_single = US31_list_alive_over30_single(ind)
-    	print "\nUS31 List of persons single above 30 are as follows: "
-    	print "| ".join(str(single) for single in alive_over30_single)
-	
 	US05_marriage_before_death(fam,ind)
 	US07_age_less_than_150(ind)
 	US03_birth_before_death(ind)
@@ -497,3 +490,5 @@ if __name__ == '__main__':
 	US27_include_current_age(ind)
 	US38_upcoming_birthdays(ind)
 	US39_upcoming_anniversaries(ind,fam)
+	US29_list_of_deceased(ind)
+	US31_list_alive_over30_single(ind)
