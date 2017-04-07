@@ -1,0 +1,15 @@
+language: python
+python:
+  - "2.7"
+cache: pip
+install:
+  - pip install -r requirements.txt
+  - pip install codecov
+script:
+  - python parser_gedcom.py
+  - python userStories.py
+after_success:
+  - coverage run parser_gedcom.py
+  - coverage run userStories.py
+  - codecov
+  - bash <(curl -s https://codecov.io/bash)
