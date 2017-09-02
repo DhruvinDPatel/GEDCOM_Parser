@@ -434,7 +434,7 @@ def US29_list_of_deceased(all_persons):
 		alive = all_persons[person]['alive']
 		if not alive:
 			deceased_all.append(all_persons[person]['name'])
-	print "US29: IND: List of all deceased:" + join(str(x) for x in deceased_all)
+	print "US29: IND: List of all deceased:" + ''.join(str(x) for x in deceased_all)
 	return deceased_all
 
 # US31 List of all living people over 30 who have never been married
@@ -452,81 +452,43 @@ def US31_list_alive_over30_single(all_persons):
 	print "US31: IND: List of all deceased:" + join(str(x) for x in alive_over30_single)
 	return alive_over30_single
 
-# US18 Siblings should not marry
-# Description: Siblings should not marry one another
-
-def US18_No_sibling_marriage(all_persons,all_families):
-    for family in all_families:
-        if family['child'] != None:
-            sibling_uids = family['child'] 
-        siblings = list(x for x in all_persons if x['id'] in sibling_uids)
-        
-        for sibling in siblings:
-            sib_family = next((x for x in all_families if x['husband_id'] == sibling['id']),
-                           None)
-            if sib_family and sib_family['wife_id'] in sibling_uids:
-                print "ERROR: US18: No Sibling Marriage Violated. "+ str(sibling_uids)
-                return False
-    return True
-
-# US13 Siblings Spacing
-# Description: Birth dates of siblings should be more than 8 months apart or less than 2 days apart (twins may be born one day apart, e.g. 11:59 PM and 12:02 AM the following calendar day)
-
-def US13_Siblings_Spacing(all_persons,all_families):
-    for family in all_families:
-        if family['child'] != None:
-            sibling_uids = family['child'] 
-        siblings = list(x for x in all_persons if x['id'] in sibling_uids)
-        sib_birthdays = sorted(siblings, key=lambda ind: ind['birthdate'], reverse=False)
-        i=0
-        count = len(sib_birthdays)
-        while i < count-1:
-            diff = sib_birthdays[i+1]['birthdate'] - sib_birthdays[i]['birthdate']
-            if (diff > timedelta(days=2) and diff < timedelta(days=243)):
-                print "ERROR: US13: Siblings Spacing Violated. "+ str(sibling_uids)
-                return False
-            i+=1
-    return True
-
 if __name__ == '__main__':
-    parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
-    fam = parser_gedcom.for_families(parsed_data)
-    ind = parser_gedcom.for_individuals(parsed_data)
+	parsed_data = gedcom.parse("sample.ged")     # Provide gedcom file path here
+	fam = parser_gedcom.for_families(parsed_data)
+	ind = parser_gedcom.for_individuals(parsed_data)
 
-    recently_born = US35_people_born_recently(ind)
-    print "US35 List of recently born:"
-    print "| ".join(str(x) for x in recently_born)
+	recently_born = US35_people_born_recently(ind)
+	print "US35 List of recently born:"
+	print "| ".join(str(x) for x in recently_born)
 
-    living_married = US30_list_living_married(fam, ind)
-    print "\nUS30 List of people who are married and alive are as follows: "
-    print "| ".join(str(x) for x in living_married)
+	living_married = US30_list_living_married(fam, ind)
+	print "\nUS30 List of people who are married and alive are as follows: "
+	print "| ".join(str(x) for x in living_married)
 
-    US05_marriage_before_death(fam,ind)
-    US07_age_less_than_150(ind)
-    US03_birth_before_death(ind)
-    US02_birth_before_marriage(fam, ind)
-    US09_birth_after_death_of_parents(fam, ind)
-    US06_divorce_before_death(fam, ind)
-    US01_dates_before_current_date(ind,fam)    
+	US05_marriage_before_death(fam,ind)
+	US07_age_less_than_150(ind)
+	US03_birth_before_death(ind)
+	US02_birth_before_marriage(fam, ind)
+	US09_birth_after_death_of_parents(fam, ind)
+	US06_divorce_before_death(fam, ind)
+	US01_dates_before_current_date(ind,fam)    
 	
-    valid_marriage = US10_marriage_after_14(ind,fam)
-    print "ERROR: FAMILY: US10 Valid Marriage Violated for "
-    print "| ".join(str(x) for x in valid_marriage.iterkeys())
+	valid_marriage = US10_marriage_after_14(ind,fam)
+	print "ERROR: FAMILY: US10 Valid Marriage Violated for "
+	print "| ".join(str(x) for x in valid_marriage.iterkeys())
 
-    US15_fewer_than_fifteen_siblings(fam)
-    US14_multiple_births_less_5(ind,fam)
-    US16_male_last_name(ind)
-    US21_correct_gender_for_role(fam,ind)
-    US23_unique_name_unique_dob(ind)
-    US25_unique_firstname_in_family(ind, fam)
-    US36_Individual_died_within_last_30_days(ind)
-    US32_multiple_births(ind)
-    US37_Spouses_Descendants_died_within_last_30_days(ind,fam)
-    US28_order_siblings_by_age(ind, fam)
-    US27_include_current_age(ind)
-    US38_upcoming_birthdays(ind)
-    US39_upcoming_anniversaries(ind,fam)
-    US29_list_of_deceased(ind)
-    US31_list_alive_over30_single(ind)
-    US18_No_sibling_marriage(ind, fam)
-    US13_Siblings_Spacing(ind,fam)
+	US15_fewer_than_fifteen_siblings(fam)
+	US14_multiple_births_less_5(ind,fam)
+	US16_male_last_name(ind)
+	US21_correct_gender_for_role(fam,ind)
+	US23_unique_name_unique_dob(ind)
+	US25_unique_firstname_in_family(ind, fam)
+	US36_Individual_died_within_last_30_days(ind)
+	US32_multiple_births(ind)
+	US37_Spouses_Descendants_died_within_last_30_days(ind,fam)
+	US28_order_siblings_by_age(ind, fam)
+	US27_include_current_age(ind)
+	US38_upcoming_birthdays(ind)
+	US39_upcoming_anniversaries(ind,fam)
+	US29_list_of_deceased(ind)
+	US31_list_alive_over30_single(ind)

@@ -1,4 +1,5 @@
-# ssw555BB2017Spring
+# GEDCOM Parser [![Build Status](https://travis-ci.org/DhruvinDPatel/ssw555BB2017Spring.svg?branch=master)](https://travis-ci.org/DhruvinDPatel/ssw555BB2017Spring) [![Coverage Status](https://codecov.io/gh/DhruvinDPatel/ssw555BB2017Spring/branch/master/graph/badge.svg)](https://codecov.io/gh/DhruvinDPatel/ssw555BB2017Spring)
+
 This repository is created for the coursework assignment in SSW555-Agile Methods for Software Development
 SSW555 is a course to learn, utilize, and implement agile methods in a team project
 
