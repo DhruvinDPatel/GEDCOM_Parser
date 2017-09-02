@@ -449,7 +449,7 @@ def US31_list_alive_over30_single(all_persons):
 			if current_age >= 30:
 				if married == None:
 					alive_over30_single.append(person_name)
-	print "US31: IND: List of all deceased:" + join(str(x) for x in alive_over30_single)
+	print "US31: IND: List of all deceased:" + ''.join(str(x) for x in alive_over30_single)
 	return alive_over30_single
 
 if __name__ == '__main__':
